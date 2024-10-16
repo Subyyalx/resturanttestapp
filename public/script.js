@@ -5,47 +5,30 @@ document.getElementById('orderForm').addEventListener('submit', function(event) 
   const dish = document.getElementById('dish').value;
 
   fetch('/submit-order', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ name, dish })
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name, dish })
   })
   .then(response => response.json())
   .then(data => {
-    showConfirmationModal(data.name, data.dish);
+      // Show the modal with the order confirmation
+      document.getElementById('orderStatus').innerText = `Order received: ${data.name} ordered ${data.dish}`;
+      document.getElementById('orderModal').style.display = 'flex';
   })
   .catch(error => console.error('Error:', error));
 });
 
-// Update dish images based on selection
-document.getElementById('dish').addEventListener('change', function() {
-const selectedDish = this.value;
-
-// Hide all images
-document.getElementById('pizzaImage').classList.add('hidden');
-document.getElementById('burgerImage').classList.add('hidden');
-document.getElementById('pastaImage').classList.add('hidden');
-
-// Show the selected dish image
-if (selectedDish === 'pizza') {
-  document.getElementById('pizzaImage').classList.remove('hidden');
-} else if (selectedDish === 'burger') {
-  document.getElementById('burgerImage').classList.remove('hidden');
-} else if (selectedDish === 'pasta') {
-  document.getElementById('pastaImage').classList.remove('hidden');
-}
+// Close the modal when clicking on the "close" button
+document.getElementById('closeModal').addEventListener('click', function() {
+  document.getElementById('orderModal').style.display = 'none';
 });
 
-// Show confirmation modal
-function showConfirmationModal(name, dish) {
-const modal = document.getElementById('confirmationModal');
-const confirmationText = `Thank you, ${name}! Your order for ${dish} has been received.`;
-document.getElementById('orderConfirmation').innerText = confirmationText;
-modal.classList.remove('hidden');
-
-// Close modal when close button is clicked
-document.querySelector('.close-btn').addEventListener('click', () => {
-  modal.classList.add('hidden');
+// Optional: Close the modal when clicking outside of it
+window.addEventListener('click', function(event) {
+  const modal = document.getElementById('orderModal');
+  if (event.target === modal) {
+      modal.style.display = 'none';
+  }
 });
-}
